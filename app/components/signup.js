@@ -103,7 +103,7 @@ function SignUp() {
           </div>
           {/* //? SUBMIT BTN */}
           <div className="p-4 pb-2  w-full flex flex-col">
-            <div className="p-4 rounded-xl hover:bg-lime-700 hover:text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg  text-lime-700 placeholder-lime-500 w-full">
+            <div className="p-4 rounded-xl cursor-pointer hover:bg-lime-700 hover:text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg  text-lime-700 placeholder-lime-500 w-full">
               <p className=" text-center">Create Account</p>
             </div>
             <div className="pt-3 w-full">
