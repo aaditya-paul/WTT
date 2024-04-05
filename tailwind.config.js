@@ -13,6 +13,11 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
+    fontFamily: {
+      inter: ["var(--font-inter)"],
+      ubuntu: ["var(--font-ubuntu)"],
+      doasis: ["var(--font-doasis)"],
+    },
   },
   plugins: [],
 };
