@@ -1,11 +1,15 @@
 import React from "react";
 import Login from "../components/login";
+import Head from "next/head";
 
 function page() {
   return (
-    <div>
-      <Login />
-    </div>
+    <>
+      <title>WTT - Login</title>
+      <div>
+        <Login />
+      </div>
+    </>
   );
 }
 

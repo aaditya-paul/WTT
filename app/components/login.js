@@ -7,8 +7,49 @@ import Logo from "../../public/logo.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye, faEyeSlash, faUser} from "@fortawesome/free-regular-svg-icons";
 import {faAt} from "@fortawesome/free-solid-svg-icons";
+import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {app} from "@/firebase";
+import InfoModal from "./utils/infoModal";
+
 function SignUp() {
   const [PassView, setPassView] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState(false);
+  const [errorDetails, setErrorDetails] = useState("");
+  const auth = getAuth();
+  const handleClick = () => {
+    if (email !== "" && password !== "") {
+      setError(false);
+      handleSignUp();
+    } else {
+      setError(true);
+      setErrorDetails("Fill all the fields first !");
+    }
+  };
+  const handleSignUp = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (e) {
+      setError(true);
+      if (e.code == "auth/invalid-credential") {
+        setErrorDetails(
+          "The email or password you entered is an invalid, Please check and try again !"
+        );
+      } else if (e.code == "auth/weak-password") {
+        setErrorDetails(
+          "The password entered must be a minimum of 6 characters."
+        );
+      } else if (e.code == "auth/email-already-in-use") {
+        setErrorDetails("The email entered is already in use, try logging in.");
+      } else {
+        setErrorDetails(e.code);
+      }
+      console.log(e);
+    }
+  };
   return (
     <div className="flex flex-col sm:flex-row justify-evenly items-center h-[100vh]">
       <div className=" flex flex-col  items-center md:items-start">
@@ -42,6 +83,9 @@ function SignUp() {
               placeholder="Email"
               type="email"
               required
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               className="p-2 rounded-md border-2 outline-none border-lime-600 border-r-0 rounded-r-none text-lime-500 placeholder-lime-500 w-full bg-[#f4f5f7]"
             />
             <FontAwesomeIcon
@@ -53,6 +97,9 @@ function SignUp() {
           <div className="p-4 pb-2  w-full flex">
             <input
               placeholder="Password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               type={PassView ? "text" : "password"}
               className="p-2 rounded-md border-2 outline-none border-lime-600 border-r-0 rounded-r-none text-lime-500 placeholder-lime-500 w-full bg-[#f4f5f7]"
             />
@@ -72,7 +119,10 @@ function SignUp() {
 
           {/* //? SUBMIT BTN */}
           <div className="p-4 pb-2  w-full flex flex-col">
-            <div className="p-4 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full">
+            <div
+              onClick={handleClick}
+              className="p-4 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full"
+            >
               <p className=" text-center">Login</p>
             </div>
             <div className="pt-3 w-full">
@@ -89,6 +139,7 @@ function SignUp() {
               </p>
             </div>
           </div>
+          <InfoModal error={error} errorDetails={errorDetails} />
         </div>
       </div>
     </div>

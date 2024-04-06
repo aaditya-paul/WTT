@@ -3,9 +3,13 @@ import SignUp from "../components/signup";
 
 function page() {
   return (
-    <div>
-      <SignUp />
-    </div>
+    <>
+      <title>WTT - Sign Up</title>
+
+      <div>
+        <SignUp />
+      </div>
+    </>
   );
 }
 
