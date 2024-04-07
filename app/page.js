@@ -5,6 +5,8 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {app} from "@/firebase";
 import {useRouter} from "next/navigation";
 import Home from "./components/home";
+import {AuthContextProvider} from "./components/context/AuthContext";
+import LoadingScreen from "./components/loadingScreen";
 
 function Page() {
   const auth = getAuth();
@@ -34,9 +36,13 @@ function Page() {
   });
 
   if (!user) {
-    return null;
+    return <LoadingScreen />;
   } else {
-    return <Home />;
+    return (
+      <AuthContextProvider value={user}>
+        <Home userProp={user} />
+      </AuthContextProvider>
+    );
   }
 }
 
