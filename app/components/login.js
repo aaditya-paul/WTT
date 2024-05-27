@@ -1,15 +1,22 @@
 "use client";
 //  TODO FIX SVG RESIZING
-import React, {useState} from "react";
+import React, {use, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../public/logo.png";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye, faEyeSlash, faUser} from "@fortawesome/free-regular-svg-icons";
 import {faAt} from "@fortawesome/free-solid-svg-icons";
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GithubAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import {app} from "@/firebase";
 import InfoModal from "./utils/infoModal";
+import GithubBTN from "./SignInButtons";
+import {userStore} from "./utils/authState";
 
 function SignUp() {
   const [PassView, setPassView] = useState(false);
@@ -20,20 +27,30 @@ function SignUp() {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const auth = getAuth();
-  const handleClick = () => {
+  const provider = new GithubAuthProvider();
+
+  // email handle click
+  const handleEmailLoginClick = () => {
     if (email !== "" && password !== "") {
       setError(false);
-      handleSignUp();
+      handleEmailLogin();
     } else {
       setError(true);
       setErrorDetails("Fill all the fields first !");
     }
   };
-  const handleSignUp = async () => {
+
+  // handling email login used in handle click
+
+  const handleEmailLogin = async () => {
     try {
+      // signing in the user
       await signInWithEmailAndPassword(auth, email, password);
     } catch (e) {
+      // watches for errors and sets it
       setError(true);
+      // sets error state to be displayed in the modal
+
       if (e.code == "auth/invalid-credential") {
         setErrorDetails(
           "The email or password you entered is an invalid, Please check and try again !"
@@ -47,8 +64,26 @@ function SignUp() {
       } else {
         setErrorDetails(e.code);
       }
-      console.log(e);
+      // console.log(e);
     }
+  };
+
+  const handleGithubLoginClick = async () => {
+    await signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+
+        const user = result.user;
+        console.log(user);
+        // userStore.dispatch(addUser(user));
+        // userStore.dispatch(addUserDetails(user));
+      })
+      .catch((e) => {
+        setErrorDetails(
+          "There was some error in authenticating, Please try again later !"
+        );
+      });
   };
   return (
     <div className="flex flex-col sm:flex-row justify-evenly items-center h-[100vh]">
@@ -120,8 +155,8 @@ function SignUp() {
           {/* //? SUBMIT BTN */}
           <div className="p-4 pb-2  w-full flex flex-col">
             <div
-              onClick={handleClick}
-              className="p-4 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full"
+              onClick={handleEmailLoginClick}
+              className="p-4 active:scale-90 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full"
             >
               <p className=" text-center">Login</p>
             </div>
@@ -131,6 +166,7 @@ function SignUp() {
                   Forgot Password ?
                 </Link>
               </p>
+              <GithubBTN handleClick={handleGithubLoginClick} />
               <p className=" text-center">
                 Dont have an account?{" "}
                 <Link className=" text-lime-500" href={"/signup"}>

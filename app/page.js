@@ -5,8 +5,11 @@ import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {app} from "@/firebase";
 import {useRouter} from "next/navigation";
 import Home from "./components/home";
-import {AuthContextProvider} from "./components/context/AuthContext";
 import LoadingScreen from "./components/loadingScreen";
+import NavBar from "./components/navBar";
+import {addUser, addUserDetails, userStore} from "./components/utils/authState";
+import {useSelector, useStore} from "react-redux";
+import {getDocument} from "./components/utils/firebase/firebaseQueries";
 
 function Page() {
   const auth = getAuth();
@@ -38,10 +41,18 @@ function Page() {
   if (!user) {
     return <LoadingScreen />;
   } else {
+    userStore.dispatch(addUser(user));
+    userStore.dispatch(addUserDetails(user));
+    // get document and user data from firebase database
+    getDocument(userStore.getState().uid).then((e) =>
+      userStore.dispatch(addUserDetails(e))
+    );
     return (
-      <AuthContextProvider value={user}>
-        <Home userProp={user} />
-      </AuthContextProvider>
+      <div className=" overflow-y-hidden">
+        <NavBar pathURL={"/"}>
+          <Home userProp={user} />
+        </NavBar>
+      </div>
     );
   }
 }

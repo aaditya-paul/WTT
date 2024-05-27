@@ -8,8 +8,18 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye, faEyeSlash, faUser} from "@fortawesome/free-regular-svg-icons";
 import {faAt} from "@fortawesome/free-solid-svg-icons";
 import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
-import {app} from "@/firebase";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+} from "firebase/firestore";
+import {app} from "@/firebase"; // ! even if its not being used dont remove it
 import InfoModal from "./utils/infoModal";
+import GithubBTN from "./SignInButtons";
+
+const db = getFirestore(app);
 
 function SignUp() {
   const [ConfirmPassView, setConfirmPassView] = useState(false);
@@ -21,6 +31,9 @@ function SignUp() {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const auth = getAuth();
+
+  // handles click
+
   const handleClick = () => {
     if (name !== "" && email !== "" && password !== "" && confirmPass !== "") {
       setError(false);
@@ -37,9 +50,27 @@ function SignUp() {
       setErrorDetails("Fill all the fields first !");
     }
   };
+
+  //  this sets up user on the database ++++++++++ IMPORTANT
+
+  const setUpUserOnDatabase = async (uid) => {
+    try {
+      const docRef = await setDoc(doc(db, "users", uid), {
+        displayName: name,
+        email: email,
+        uid: uid,
+      });
+    } catch (e) {
+      console.log(e);
+      setError(e);
+    }
+  };
+
   const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password).then((e) =>
+        setUpUserOnDatabase(e.user.uid)
+      );
     } catch (e) {
       setError(true);
       if (e.code == "auth/invalid-email") {
@@ -83,7 +114,7 @@ function SignUp() {
       </div>
       {/* //* form */}
       <div className="p-5 md:p-0">
-        <div className="lg:w-[400px] md:w-[350px] md:min-w-[300px] w-[90vw]  md:h-[480px] lg:h-[500px] h-[500px] border-2 border-lime-900 rounded-md flex flex-col items-center">
+        <div className="lg:w-[400px] md:w-[350px] md:min-w-[300px] w-[90vw]  md:h-[560px] lg:h-[580px] h-[580px] border-2 border-lime-900 rounded-md flex flex-col items-center">
           <div className=" self-start mx-4 mt-5 text-2xl font-bold text-lime-800">
             <p className="">Create Account</p>
           </div>
@@ -167,10 +198,11 @@ function SignUp() {
           <div className="p-4 pb-2  w-full flex flex-col">
             <div
               onClick={handleClick}
-              className="p-4 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full"
+              className="p-4 active:scale-90 rounded-xl cursor-pointer bg-lime-700 text-white transition-all ease-linear  border-2 outline-none border-lime-700 font-semibold text-lg   placeholder-lime-500 w-full"
             >
               <p className=" text-center">Create Account</p>
             </div>
+            <GithubBTN />
             <div className="pt-3 w-full">
               <p className=" text-center">
                 Already have an account?{" "}
