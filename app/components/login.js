@@ -27,7 +27,6 @@ function SignUp() {
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
   const auth = getAuth();
-  const provider = new GithubAuthProvider();
 
   // email handle click
   const handleEmailLoginClick = () => {
@@ -68,23 +67,6 @@ function SignUp() {
     }
   };
 
-  const handleGithubLoginClick = async () => {
-    await signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-
-        const user = result.user;
-        console.log(user);
-        // userStore.dispatch(addUser(user));
-        // userStore.dispatch(addUserDetails(user));
-      })
-      .catch((e) => {
-        setErrorDetails(
-          "There was some error in authenticating, Please try again later !"
-        );
-      });
-  };
   return (
     <div className="flex flex-col sm:flex-row justify-evenly items-center h-[100vh]">
       <div className=" flex flex-col  items-center md:items-start">
@@ -166,7 +148,7 @@ function SignUp() {
                   Forgot Password ?
                 </Link>
               </p>
-              <GithubBTN handleClick={handleGithubLoginClick} />
+              <GithubBTN />
               <p className=" text-center">
                 Dont have an account?{" "}
                 <Link className=" text-lime-500" href={"/signup"}>
