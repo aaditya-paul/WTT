@@ -3,20 +3,24 @@ import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import themeToggler from "../../public/assets/icons/themeToggler.svg";
 import notify from "../../public/assets/icons/notification_2645897.png";
-import userImage from "../../public/assets/icons/user.png";
 import Logo from "../../public/logo.png";
 import Link from "next/link";
-import {addUserDetails, userStore} from "./utils/authState";
-import {getDocument} from "./utils/firebase/firebaseQueries";
-import {DisplayFilteredName} from "./utils/filteredProvidedDetails";
+import {userStore} from "./utils/authState";
+import {
+  DisplayFilteredName,
+  DisplayFilteredPFP,
+} from "./utils/filteredProvidedDetails";
 
 function Header() {
   const [name, setName] = useState("");
 
   useEffect(() => {
-    getDocument(userStore.getState().uid).then((e) => {
-      userStore.dispatch(addUserDetails(e));
-      setName(e);
+    // getDocument(userStore.getState().uid).then((e) => {
+    //   userStore.dispatch(addUserDetails(e));
+    //   setName(e);
+    // });
+    userStore.subscribe(() => {
+      setName(DisplayFilteredName);
     });
   }, []);
 
@@ -50,16 +54,9 @@ function Header() {
           </div>
 
           <div className="flex justify-evenly items-center">
-            <div className="relative  w-5 md:w-6 h-5 md:h-6 ml-5">
-              <Image
-                alt="theme"
-                src={userImage}
-                className=" object-contain"
-                fill
-              />
-            </div>
+            <DisplayFilteredPFP />
             <p className=" hidden md:block font-secondary text-xl font-medium font-ubuntu text-center ml-5">
-              <DisplayFilteredName />
+              {name}
             </p>
           </div>
         </div>

@@ -26,6 +26,7 @@ export const userSlice = createSlice({
       state.uid = user.uid;
       state.email = user.email;
       state.displayName = user.displayName ? user.displayName : "";
+      state.photoURL = user.photoURL ? user.photoURL : "";
     },
     addUserDetails: (state, action) => {
       state.userDetails = action.payload;
