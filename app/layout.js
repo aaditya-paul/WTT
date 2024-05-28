@@ -1,6 +1,6 @@
 // import {Inter, Ubuntu} from "next/font/google";
 import Head from "next/head";
-import {Inter,Ubuntu,Dosis} from "next/font/google"
+import {Inter, Ubuntu, Dosis} from "next/font/google";
 const inter_init = Inter({subsets: ["latin"], variable: "--font-inter"});
 const ubuntu_init = Ubuntu({
   subsets: ["latin"],
@@ -14,6 +14,7 @@ const dosis_init = Dosis({
   variable: "--font-doasis",
 });
 import "./globals.css";
+import Providers from "@/lib/redux/provider";
 
 export const metadata = {
   title: "WTT",
@@ -40,7 +41,7 @@ export default function RootLayout({children}) {
       <body
         className={` ${ubuntu_init.variable} ${inter_init.variable} ${dosis_init} `}
       >
-        <div className=""> {children}</div>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

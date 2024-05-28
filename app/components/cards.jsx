@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Add from "../../public/assets/icons/add.png";
 import userImage from "../../public/assets/icons/user.png";
+import {useRouter} from "next/navigation";
 
 function Cards() {
   return (
@@ -94,10 +95,17 @@ function Cards() {
 }
 
 export function AddCard(params) {
+  const router = useRouter();
+
   return (
     <div className=" hover:scale-105 border-2 border-primary transition-all ease-linear bg-white w-[350px] p-5 rounded-md h-[500px] shadow-sm flex justify-center items-center">
       <div className="  flex flex-col gap-5 items-center justify-center text-center align-top ">
-        <div className=" cursor-pointer relative w-24 h-24">
+        <div
+          onClick={() => {
+            router.push("/add-project");
+          }}
+          className=" cursor-pointer relative w-24 h-24"
+        >
           <Image fill src={Add} alt="add" />
         </div>
         <div className=" text-2xl">Add Projects</div>

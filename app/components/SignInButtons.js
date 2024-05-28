@@ -1,7 +1,10 @@
 import React from "react";
 import {getAuth, GithubAuthProvider, signInWithPopup} from "firebase/auth";
+import {app} from "@/firebase";
+
 const auth = getAuth();
 const provider = new GithubAuthProvider();
+
 function GithubBTN() {
   const handleGithubLoginClick = async () => {
     await signInWithPopup(auth, provider)
@@ -10,15 +13,8 @@ function GithubBTN() {
         const token = credential.accessToken;
 
         const user = result.user;
-
-        // console.log(user);
-        // userStore.dispatch(addUser(user));
-        // userStore.dispatch(addUserDetails(user));
       })
       .catch((e) => {
-        // setErrorDetails(
-        //   "There was some error in authenticating, Please try again later !"
-        // );
         console.log(e);
       });
   };

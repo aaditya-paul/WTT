@@ -1,25 +1,23 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import LoadingScreen from "./loadingScreen";
-import {userStore} from "./utils/authState";
 import Image from "next/image";
 import Cards, {AddCard} from "./cards";
-import {DisplayFilteredName} from "./utils/filteredProvidedDetails";
+import {useSelector} from "react-redux";
+// import {DisplayFilteredName} from "./utils/filteredProvidedDetails";
 function Home({userProp}) {
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [uid, setUID] = useState();
+  const user = useSelector((state) => state.authState.user);
   const time = new Date().getHours();
+  const name = user.displayName;
+  // useEffect(() => {
+  //   userStore.subscribe(() => {
+  //     setEmail(userStore.getState().email);
+  //     setUID(userStore.getState().uid);
+  //     setName(DisplayFilteredName);
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    userStore.subscribe(() => {
-      setEmail(userStore.getState().email);
-      setUID(userStore.getState().uid);
-      setName(DisplayFilteredName);
-    });
-  }, []);
-
-  if (userProp && name) {
+  if (user) {
     return (
       <div className=" overflow-y-scroll h-[88vh] pb-5">
         <title>WTT - Home</title>

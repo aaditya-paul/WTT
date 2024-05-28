@@ -1,43 +1,33 @@
-"use client";
-
 import React, {useEffect, useState} from "react";
 import {getAuth, onAuthStateChanged} from "firebase/auth";
 import {app} from "@/firebase";
 import {useRouter} from "next/navigation";
-import Home from "./components/home";
-import LoadingScreen from "./components/loadingScreen";
-import NavBar from "./components/navBar";
-import {
-  checkIfDocumentExists,
-  setDocument,
-} from "./components/utils/firebase/firebaseQueries";
 import {useDispatch} from "react-redux";
 import {setUID, setUserRedux} from "@/lib/redux/features/auth";
+import {checkIfDocumentExists, setDocument} from "./firebase/firebaseQueries";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 const db = getFirestore(app);
-function Page() {
+function AuthStateCheck({redirectRoute}) {
   const dispatch = useDispatch();
 
   const auth = getAuth();
   const router = useRouter();
   const [user, setUser] = useState(false);
 
-  // check signed in or not
-
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const uid = user.uid;
 
-        router.replace("/");
+        if (redirectRoute) {
+          router.replace(redirectRoute.toString());
+        }
         //  sets user to state in this page
         setUser(user);
         // sets user in redux
         dispatch(setUserRedux(JSON.parse(JSON.stringify(user))));
-
         dispatch(setUID(user.uid));
 
-        // sets user in database
         if (checkIfDocumentExists("users", user.uid)) {
           null;
         } else {
@@ -49,24 +39,11 @@ function Page() {
         setUser(false);
       }
     });
-  }, [auth, router, dispatch]);
 
-  // TODO fix this shit
+    return () => unsubscribe();
+  }, [auth, router, dispatch, redirectRoute]);
 
-  if (!user) {
-    return <LoadingScreen />;
-  } else {
-    // set the document to database everytime someone logs in !!
-
-    // console.log("hii");
-    return (
-      <div className=" overflow-y-hidden">
-        <NavBar pathURL={"/"}>
-          <Home />
-        </NavBar>
-      </div>
-    );
-  }
+  return null;
 }
 
-export default Page;
+export default AuthStateCheck;

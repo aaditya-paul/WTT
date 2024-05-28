@@ -4,6 +4,7 @@ import Image from "next/image";
 import Hamburger from "../../public/assets/icons/hamburger.svg";
 import Dashboard from "../../public/assets/icons/dashboard.png";
 import Jobs from "../../public/assets/icons/jobs.png";
+import Project from "../../public/assets/icons/study.png";
 import Settings from "../../public/assets/icons/icons8-settings.svg";
 import LogOut from "../../public/assets/icons/logout_1828427.png";
 import DropDown from "../../public/assets/icons/caret.png";
@@ -21,6 +22,13 @@ const routes = [
     icon: Jobs,
     isVisibleOnPhn: true,
     hasDropDown: true,
+  },
+  {
+    name: "Create Project",
+    path: "/add-project",
+    icon: Project,
+    isVisibleOnPhn: true,
+    hasDropDown: false,
   },
 ];
 function NavBar({children, pathURL}) {
