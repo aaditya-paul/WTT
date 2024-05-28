@@ -1,5 +1,4 @@
 // import {Inter, Ubuntu} from "next/font/google";
-"use client";
 import Head from "next/head";
 import {Inter, Ubuntu, Dosis} from "next/font/google";
 const inter_init = Inter({subsets: ["latin"], variable: "--font-inter"});
