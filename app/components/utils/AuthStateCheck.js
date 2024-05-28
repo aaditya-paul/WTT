@@ -4,9 +4,10 @@ import {app} from "@/firebase";
 import {useRouter} from "next/navigation";
 import {useDispatch} from "react-redux";
 import {setUID, setUserRedux} from "@/lib/redux/features/auth";
-import {checkIfDocumentExists, setDocument} from "./firebase/firebaseQueries";
+import {CheckIfDocumentExists, setDocument} from "./firebase/firebaseQueries";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
 const db = getFirestore(app);
+
 function AuthStateCheck({redirectRoute}) {
   const dispatch = useDispatch();
 
@@ -28,12 +29,14 @@ function AuthStateCheck({redirectRoute}) {
         dispatch(setUserRedux(JSON.parse(JSON.stringify(user))));
         dispatch(setUID(user.uid));
 
-        if (checkIfDocumentExists("users", user.uid)) {
-          null;
-        } else {
-          console.log("setting database");
-          setDocument("users", user.uid, JSON.parse(JSON.stringify(user)));
-        }
+        CheckIfDocumentExists("users", user.uid, user).then((exists) => {
+          if (exists) {
+            null;
+          } else {
+            console.log("setting database");
+            setDocument("users", user.uid, JSON.parse(JSON.stringify(user)));
+          }
+        });
       } else {
         router.replace("/login");
         setUser(false);

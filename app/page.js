@@ -8,7 +8,7 @@ import Home from "./components/home";
 import LoadingScreen from "./components/loadingScreen";
 import NavBar from "./components/navBar";
 import {
-  checkIfDocumentExists,
+  CheckIfDocumentExists,
   setDocument,
 } from "./components/utils/firebase/firebaseQueries";
 import {useDispatch} from "react-redux";
@@ -37,13 +37,15 @@ function Page() {
 
         dispatch(setUID(user.uid));
 
-        // sets user in database
-        if (checkIfDocumentExists("users", user.uid)) {
-          null;
-        } else {
-          console.log("setting database");
-          setDocument("users", user.uid, JSON.parse(JSON.stringify(user)));
-        }
+        // sets user in database after checking shit
+        CheckIfDocumentExists("users", user.uid, user).then((exists) => {
+          if (exists) {
+            null;
+          } else {
+            console.log("setting database");
+            setDocument("users", user.uid, JSON.parse(JSON.stringify(user)));
+          }
+        });
       } else {
         router.replace("/login");
         setUser(false);
