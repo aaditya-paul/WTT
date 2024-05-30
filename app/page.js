@@ -38,7 +38,7 @@ function Page() {
         dispatch(setUID(user.uid));
 
         // sets user in database after checking shit
-        CheckIfDocumentExists("users", user.uid, user).then((exists) => {
+        await CheckIfDocumentExists("users", user.uid, user).then((exists) => {
           if (exists) {
             null;
           } else {
@@ -53,14 +53,9 @@ function Page() {
     });
   }, [auth, router, dispatch]);
 
-  // TODO fix this shit
-
   if (!user) {
     return <LoadingScreen />;
   } else {
-    // set the document to database everytime someone logs in !!
-
-    // console.log("hii");
     return (
       <div className=" overflow-y-hidden">
         <NavBar pathURL={"/"}>

@@ -1,12 +1,106 @@
 "use client";
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import LoadingScreen from "./loadingScreen";
 import Image from "next/image";
 import Project from "../../public/assets/icons/study.png";
+import InfoModal from "./utils/infoModal";
+import {setDocument, updateDocument} from "./utils/firebase/firebaseQueries";
+import {useRouter} from "next/navigation";
+import {arrayUnion} from "firebase/firestore";
 function AddProjects() {
   const user = useSelector((state) => state.authState.user);
+  const [projectName, setProjectName] = useState("");
+  const [projectSlug, setProjectSlug] = useState("");
+  const [ProjectIcon, setProjectIcon] = useState("");
+  const [ProjectDescription, setProjectDescripton] = useState("");
+  const [startDate, setStartDate] = useState();
+  const [deadlineDate, setDeadlineDate] = useState();
+  const [member, setMember] = useState([]);
+  const [memberEmail, setMemberEmail] = useState("");
+  const [error, setError] = useState(false);
+
+  const router = useRouter();
+  useEffect(() => {
+    setProjectName(localStorage.getItem("projectName"));
+    setProjectSlug(localStorage.getItem("projectSlug"));
+    setProjectIcon(localStorage.getItem("ProjectIcon"));
+    setProjectDescripton(localStorage.getItem("ProjectDescription"));
+    setStartDate(localStorage.getItem("startDate"));
+    setDeadlineDate(localStorage.getItem("deadlineDate"));
+    setMemberEmail(localStorage.getItem("memberEmail"));
+  }, []);
+
+  const handleClick = (
+    projectName,
+    projectSlug,
+    ProjectIcon,
+    ProjectDescription,
+    startDate,
+    deadlineDate,
+    memberEmail
+  ) => {
+    const data = {
+      projectName: projectName,
+      projectSlug: projectSlug,
+      ProjectIcon: ProjectIcon,
+      ProjectDescription: ProjectDescription,
+      startDate: startDate,
+      deadlineDate: deadlineDate,
+      members: [...member, user.uid],
+      createdBy: user.uid,
+    };
+
+    if (
+      checkValidity(
+        projectName,
+        projectSlug,
+        ProjectIcon,
+        ProjectDescription,
+        startDate,
+        deadlineDate,
+        memberEmail
+      )
+    ) {
+      //logic
+      router.push("/all-projects/" + projectSlug);
+      // sets doc in database
+      setDocument("projects", projectSlug, data);
+      // updateDocument("users", user.uid, {
+      //   "projects": arrayUnion(projectSlug),
+      // });
+      // clears cache
+      localStorage.clear();
+    }
+  };
+
+  const checkValidity = (
+    projectName,
+    projectSlug,
+    ProjectIcon,
+    ProjectDescription,
+    startDate,
+    deadlineDate,
+    memberEmail
+  ) => {
+    if (
+      projectName == "" ||
+      projectSlug == "" ||
+      ProjectIcon == "" ||
+      ProjectDescription == "" ||
+      startDate == undefined ||
+      deadlineDate == undefined ||
+      memberEmail == []
+    ) {
+      setError(true);
+
+      return false;
+    } else {
+      setError(false);
+      return true;
+    }
+  };
 
   if (user) {
     return (
@@ -33,6 +127,11 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <input
+                    value={projectName}
+                    onChange={(e) => {
+                      localStorage.setItem("projectName", e.target.value);
+                      setProjectName(localStorage.getItem("projectName"));
+                    }}
                     autoComplete="off"
                     type="text"
                     placeholder="Project Name 123"
@@ -48,7 +147,12 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <input
+                    value={projectSlug}
                     autoComplete="off"
+                    onChange={(e) => {
+                      localStorage.setItem("projectSlug", e.target.value);
+                      setProjectSlug(localStorage.getItem("projectSlug"));
+                    }}
                     type="text"
                     placeholder="project-name-123"
                     className="   bg-transparent border-b border-primary w-full py-2 px-1 text-4xl outline-none"
@@ -63,10 +167,15 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <input
+                    value={ProjectIcon}
                     autoComplete="off"
                     type="text"
+                    onChange={(e) => {
+                      localStorage.setItem("ProjectIcon", e.target.value);
+                      setProjectIcon(localStorage.getItem("ProjectIcon"));
+                    }}
                     placeholder="https://example.com"
-                    className="   bg-transparent border-b border-primary w-full py-2 px-1 text-4xl outline-none"
+                    className="bg-transparent border-b border-primary w-full py-2 px-1 text-4xl outline-none"
                   />
                 </div>
               </div>
@@ -78,9 +187,19 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <textarea
+                    value={ProjectDescription}
+                    onChange={(e) => {
+                      localStorage.setItem(
+                        "ProjectDescription",
+                        e.target.value
+                      );
+                      setProjectDescripton(
+                        localStorage.getItem("ProjectDescription")
+                      );
+                    }}
                     autoComplete="off"
                     type="text"
-                    placeholder="https://example.com"
+                    placeholder="This project is about ..."
                     className=" min-h-[120px] bg-transparent border-b border-r rounded-sm border-primary w-full py-2 px-1 text-4xl outline-none"
                   />
                 </div>
@@ -103,6 +222,11 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <input
+                    value={startDate}
+                    onChange={(e) => {
+                      localStorage.setItem("startDate", e.target.value);
+                      setStartDate(localStorage.getItem("startDate"));
+                    }}
                     autoComplete="off"
                     type="date"
                     placeholder="12th March, 2024"
@@ -119,6 +243,11 @@ function AddProjects() {
                 </div>
                 <div className=" my-5  ">
                   <input
+                    value={deadlineDate}
+                    onChange={(e) => {
+                      localStorage.setItem("deadlineDate", e.target.value);
+                      setDeadlineDate(localStorage.getItem("deadlineDate"));
+                    }}
                     autoComplete="off"
                     type="date"
                     placeholder="7th August, 2024"
@@ -134,13 +263,19 @@ function AddProjects() {
                 </div>
                 <div className=" my-5 flex gap-5 ">
                   <input
+                    value={memberEmail}
                     autoComplete="off"
+                    onChange={(e) => {
+                      // setMemberEmail([...memberEmail,e
+                      localStorage.setItem("memberEmail", e.target.value);
+                      setMemberEmail(localStorage.getItem("memberEmail"));
+                    }}
                     type="email"
                     placeholder="member@email.com"
                     className="   bg-transparent border-b border-primary w-full py-2 px-1 text-4xl outline-none"
                   />
                   {/* member add */}
-                  <div className=" active:scale-95 cursor-pointer p-2 border-2 border-primary rounded-md flex justify-center items-center">
+                  <div className=" transition-all ease-linear active:scale-90 cursor-pointer p-2 border-2 border-primary rounded-md flex justify-center items-center">
                     <div className=" relative w-8 h-8  ">
                       <Image
                         alt="add"
@@ -155,9 +290,27 @@ function AddProjects() {
             </div>
           </div>
           {/* button */}
-          <div className=" active:scale-90 mb-24 py-5 text-3xl px-12 transition-all cursor-pointer flex justify-center self-center ease-linear hover:text-white hover:bg-primary border-2 border-primary w-[350px] ">
+          <div
+            onClick={() => {
+              handleClick(
+                projectName,
+                projectSlug,
+                ProjectIcon,
+                ProjectDescription,
+                startDate,
+                deadlineDate,
+                memberEmail
+              );
+            }}
+            className=" active:scale-90 mb-24 py-5 text-3xl px-12 transition-all cursor-pointer flex justify-center self-center ease-linear hover:text-white hover:bg-primary border-2 border-primary w-[350px] "
+          >
             <div>Create Project</div>
           </div>
+        </div>
+        <div className={`${error ? "block" : "hidden"}`}>
+          <InfoModal
+            errorDetails={"Please fill all the fields before submitting !"}
+          />
         </div>
       </div>
     );

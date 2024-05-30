@@ -5,28 +5,44 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
   setDoc,
+  where,
 } from "firebase/firestore";
 import {useSelector} from "react-redux";
 const db = getFirestore(app);
 
-export const getDocument = async (uid) => {
-  const querySnapshot = await getDoc(doc(db, "users", uid));
+export const getDocument = async (collection, document) => {
+  const querySnapshot = await getDoc(doc(db, collection, document));
   return querySnapshot.data();
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(`${doc.id} => ${doc.data()}`);
-  //     return doc.data();
-  //   });
 };
-export const setDocument = async (collection, uid, value) => {
-  await setDoc(doc(db, collection, uid), value);
+export const getQueriedDocuments = async (
+  collec,
+  queryField,
+  queryComparator,
+  queryValue
+) => {
+  const querySnapshot = await getDocs(
+    query(
+      collection(db, collec),
+      where(queryField, queryComparator, queryValue)
+    )
+  );
+  return querySnapshot;
+};
+export const setDocument = async (collection, document, value) => {
+  await setDoc(doc(db, collection, document), value);
+};
+export const updateDocument = async (collection, document, value) => {
+  await updateDocument(doc(db, collection, document), value);
 };
 
 export async function CheckIfDocumentExists(collection, uid, user) {
   // const user = useSelector((state) => state.authState.user);
   const docRef = doc(db, collection, uid);
   const docSnap = await getDoc(docRef);
-  if (user) {
+  // console.log(docSnap.data());
+  if (user && docSnap.data()) {
     if (
       (await docSnap.data().displayName) == (await user.displayName) &&
       (await docSnap.data().photoURL) == (await user.photoURL)

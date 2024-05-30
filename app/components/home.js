@@ -4,19 +4,50 @@ import LoadingScreen from "./loadingScreen";
 import Image from "next/image";
 import Cards, {AddCard} from "./cards";
 import {useSelector} from "react-redux";
+import {getQueriedDocuments} from "./utils/firebase/firebaseQueries";
+import LoadingComponent from "./loadingComponent";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import {app} from "@/firebase";
+import {Swiper, SwiperSlide} from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
 // import {DisplayFilteredName} from "./utils/filteredProvidedDetails";
 function Home({userProp}) {
   const user = useSelector((state) => state.authState.user);
   const time = new Date().getHours();
   const name = user.displayName;
-  // useEffect(() => {
-  //   userStore.subscribe(() => {
-  //     setEmail(userStore.getState().email);
-  //     setUID(userStore.getState().uid);
-  //     setName(DisplayFilteredName);
-  //   });
-  // }, []);
+  const [projectData, setProjectData] = useState([]);
+  const db = getFirestore(app);
 
+  useEffect(() => {
+    async function getData() {
+      if (user) {
+        const q = query(
+          collection(db, "projects"),
+          where("members", "array-contains", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+
+        const projectsArray = [];
+        querySnapshot.forEach((doc) => {
+          projectsArray.push({id: doc.id, ...doc.data()});
+        });
+
+        setProjectData(projectsArray);
+      }
+    }
+    getData();
+  }, [db, user]);
+
+  console.log(projectData);
+  // TODO fix this shit
   if (user) {
     return (
       <div className=" overflow-y-scroll h-[88vh] pb-5">
@@ -40,13 +71,28 @@ function Home({userProp}) {
         {/* overview */}
         <div className="m-5 my-10">
           <div className=" font-inter font-medium text-2xl ">
-            Overview of recently opened projects :-{" "}
+            Recent projects you were added in :-{" "}
           </div>
-          <div className=" flex gap-5 mx-10 my-5 font-doasis font-medium text-lime-700 ">
+          <div className="  mx-10 my-5 font-doasis font-medium text-lime-700 ">
             {/* cards */}
-            <Cards />
+            <div className="flex h-full gap-5 flex-wrap ">
+              {projectData.length == 0
+                ? null
+                : projectData.slice(-2).map((e) => {
+                    return (
+                      <Cards
+                        key={e.projectSlug}
+                        projectName={e.projectName}
+                        projectDescription={e.ProjectDescription}
+                        startDate={e.startDate}
+                        deadlineDate={e.deadlineDate}
+                        projectSlug={e.projectSlug}
+                      />
+                    );
+                  })}
+              <AddCard />
+            </div>
             {/* add project card */}
-            <AddCard />
           </div>
         </div>
       </div>

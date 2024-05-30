@@ -39,7 +39,7 @@ export default function RootLayout({children}) {
         />
       </Head>
       <body
-        className={` ${ubuntu_init.variable} ${inter_init.variable} ${dosis_init} `}
+        className={` ${ubuntu_init.variable} ${inter_init.variable} ${dosis_init} overflow-hidden `}
       >
         <Providers>{children}</Providers>
       </body>
