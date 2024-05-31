@@ -184,6 +184,7 @@ function NavBar({children, pathURL}) {
                       </div>
                     </div>
                   </div>
+                  {/* projectss */}
                   <div
                     className={` overflow-y-scroll h-[300px] ${
                       dropDown ? "flex" : "hidden"
