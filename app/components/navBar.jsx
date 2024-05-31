@@ -135,14 +135,7 @@ function NavBar({children, pathURL}) {
                       </Link>
                     );
                   })}
-                  {/* project and project dropdown */}
-                  <div
-                    className={`flex overflow-hidden items-center justify-between px-1 rounded-md ${
-                      pathURL == "/all-projects"
-                        ? " bg-[#cbeb66] bg-opacity-80"
-                        : "bg-transparent"
-                    } `}
-                  >
+                  <div className="flex overflow-hidden items-center justify-between">
                     <Link href={"/all-projects"}>
                       <div
                         className={`flex p-3 items-center my-1 rounded-lg  ${
