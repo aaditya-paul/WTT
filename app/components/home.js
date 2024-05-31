@@ -58,7 +58,7 @@ function Home({userProp}) {
   // TODO fix this shit
   if (user) {
     return (
-      <div className=" overflow-y-scroll h-[88vh] pb-5">
+      <div className=" overflow-y-scroll overflow-x-hidden h-[88vh] pb-5">
         <title>WTT - Home</title>
         {/* heading */}
         <div className=" my-5 w-full flex justify-center ">
