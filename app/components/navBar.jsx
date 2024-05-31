@@ -185,14 +185,12 @@ function NavBar({children, pathURL}) {
                   </div>
                   {/* projectss */}
                   <div
-                    className={` overflow-y-scroll h-[300px] mt-5 ${
+                    className={` overflow-y-scroll h-[300px] mt-2 ${
                       dropDown ? "flex" : "hidden"
                     } justify-center`}
                   >
                     {projectData.length > 0 ? (
-                      <div
-                        className={`flex flex-col items-center justify-center w-full mt-10`}
-                      >
+                      <div className={`flex flex-col items-center w-full`}>
                         {projectData.map((e) => {
                           return (
                             <div className="w-full" key={e.id}>
