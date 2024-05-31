@@ -20,6 +20,14 @@ function Home({userProp}) {
   const name = user.displayName;
   const [projectData, setProjectData] = useState([]);
   const db = getFirestore(app);
+  const [clock, setClock] = useState(new Date());
+
+  const formatTime = (date) => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  };
 
   useEffect(() => {
     async function getData() {
@@ -41,6 +49,11 @@ function Home({userProp}) {
     getData();
   }, [db, user]);
 
+  useEffect(() => {
+    const timerId = setInterval(() => setClock(new Date()), 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
   console.log(projectData);
   // TODO fix this shit
   if (user) {
@@ -48,10 +61,10 @@ function Home({userProp}) {
       <div className=" overflow-y-scroll h-[88vh] pb-5">
         <title>WTT - Home</title>
         {/* heading */}
-        <div className=" my-5 w-full flex justify-center">
+        <div className=" my-5 w-full flex justify-center ">
           <div className=" w-fit group ">
             {/*  greeting  */}
-            <div className=" font-ubuntu font-semibold text-4xl text-slate-800 ">
+            <div className=" basis-2/3 font-ubuntu font-semibold text-4xl text-slate-800 ">
               {time < 12
                 ? "Good Morning "
                 : time > 15
@@ -62,6 +75,9 @@ function Home({userProp}) {
             {/* underline border */}
             <div className=" w-0 bg-transparent p-[3px] group-hover:bg-primary-accent group-hover:w-full transition-all ease-linear  justify-center   my-1"></div>
           </div>
+        </div>
+        <div className=" relative p-2  text-purple-700 -top-[85px] -right-[80%] font-ubuntu font-semibold text-4xl ">
+          {formatTime(clock)}
         </div>
         {/* overview */}
         <div className="m-5 my-10">
