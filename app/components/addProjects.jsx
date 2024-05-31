@@ -64,9 +64,10 @@ function AddProjects() {
       )
     ) {
       //logic
-      router.push("/all-projects/" + projectSlug);
       // sets doc in database
-      setDocument("projects", projectSlug, data);
+      setDocument("projects", projectSlug, data).then(() => {
+        router.push("/all-projects/" + projectSlug);
+      });
       // updateDocument("users", user.uid, {
       //   "projects": arrayUnion(projectSlug),
       // });
