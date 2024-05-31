@@ -94,7 +94,7 @@ function NavBar({children, pathURL}) {
                           <p
                             className={`text-justify text-sm md:text-sm transition-all duration-500 mx-4 ${
                               toggleMenu ? "block " : " hidden "
-                            }`}
+                            } `}
                           >
                             {e.name}
                           </p>
@@ -102,7 +102,13 @@ function NavBar({children, pathURL}) {
                       </Link>
                     );
                   })}
-                  <div className="flex overflow-hidden items-center justify-between">
+                  <div
+                    className={`flex overflow-hidden items-center justify-between px-1 rounded-md ${
+                      pathURL == "/all-projects"
+                        ? " bg-[#cbeb66] bg-opacity-80"
+                        : "bg-transparent"
+                    } `}
+                  >
                     <Link href={"/all-projects"}>
                       <div
                         className={`flex p-3 items-center my-1 rounded-lg  ${
