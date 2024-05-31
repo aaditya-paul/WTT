@@ -135,7 +135,13 @@ function NavBar({children, pathURL}) {
                       </Link>
                     );
                   })}
-                  <div className="flex overflow-hidden items-center justify-between">
+                  <div
+                    className={`flex overflow-hidden items-center justify-between ${
+                      pathURL == "/all-projects"
+                        ? " bg-[#cbeb66] bg-opacity-80"
+                        : "bg-transparent"
+                    } px-2 rounded-md`}
+                  >
                     <Link href={"/all-projects"}>
                       <div
                         className={`flex p-3 items-center my-1 rounded-lg  ${
@@ -153,7 +159,7 @@ function NavBar({children, pathURL}) {
                         <p
                           className={`text-justify text-sm md:text-sm transition-all duration-500 mx-4 ${
                             toggleMenu ? "block " : " hidden "
-                          }`}
+                          } `}
                         >
                           Projects
                         </p>
@@ -179,7 +185,7 @@ function NavBar({children, pathURL}) {
                   </div>
                   {/* projectss */}
                   <div
-                    className={` overflow-y-scroll h-[300px] ${
+                    className={` overflow-y-scroll h-[300px] mt-5 ${
                       dropDown ? "flex" : "hidden"
                     } justify-center`}
                   >
