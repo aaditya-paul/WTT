@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Image from "next/image";
 import Hamburger from "../../public/assets/icons/hamburger.svg";
 import Dashboard from "../../public/assets/icons/dashboard.png";
@@ -13,6 +13,15 @@ import Link from "next/link";
 import Header from "./header";
 import {getAuth, signOut} from "firebase/auth";
 import {app} from "@/firebase";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
+import {useSelector} from "react-redux";
+import LoadingComponent from "./loadingComponent";
 
 const routes = [
   {name: "Dashboard", path: "/", icon: Dashboard, isVisibleOnPhn: true},
@@ -35,10 +44,33 @@ function NavBar({children, pathURL}) {
   if (pathURL === undefined) {
     throw new Error("Pass the prop pathURL !!");
   }
+  const user = useSelector((state) => state.authState.user);
 
+  const [projectData, setProjectData] = useState([]);
   const [toggleMenu, setToggleMenu] = useState(true);
-  const [dropDown, setDropDown] = useState(false);
+  const [dropDown, setDropDown] = useState(true);
+  const db = getFirestore(app);
+  useEffect(() => {
+    async function getData() {
+      if (user.uid) {
+        const q = query(
+          collection(db, "projects"),
+          where("members", "array-contains", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
 
+        const projectsArray = [];
+        querySnapshot.forEach((doc) => {
+          projectsArray.push({id: doc.id, ...doc.data()});
+        });
+
+        setProjectData(projectsArray);
+      }
+    }
+    getData();
+  }, [db, user]);
+
+  // console.log(projectData);
   return (
     <>
       <Header />
@@ -58,6 +90,7 @@ function NavBar({children, pathURL}) {
                 <div
                   onClick={() => {
                     setToggleMenu(!toggleMenu);
+                    setDropDown(!DropDown);
                   }}
                   className="relative w-8 h-8 cursor-pointer  "
                 >
@@ -69,7 +102,7 @@ function NavBar({children, pathURL}) {
                   />
                 </div>
               </div>
-              <div className=" overflow-auto flex  flex-col justify-between w-full pt-5 cursor-pointer  h-full ">
+              <div className=" overflow-auto flex  flex-col justify-between w-full  cursor-pointer  h-full ">
                 <div>
                   {routes.map((e) => {
                     return (
@@ -94,7 +127,7 @@ function NavBar({children, pathURL}) {
                           <p
                             className={`text-justify text-sm md:text-sm transition-all duration-500 mx-4 ${
                               toggleMenu ? "block " : " hidden "
-                            }`}
+                            } `}
                           >
                             {e.name}
                           </p>
@@ -102,7 +135,14 @@ function NavBar({children, pathURL}) {
                       </Link>
                     );
                   })}
-                  <div className="flex overflow-hidden items-center justify-between">
+                  {/* project and project dropdown */}
+                  <div
+                    className={`flex overflow-hidden items-center justify-between px-1 rounded-md ${
+                      pathURL == "/all-projects"
+                        ? " bg-[#cbeb66] bg-opacity-80"
+                        : "bg-transparent"
+                    } `}
+                  >
                     <Link href={"/all-projects"}>
                       <div
                         className={`flex p-3 items-center my-1 rounded-lg  ${
@@ -132,7 +172,7 @@ function NavBar({children, pathURL}) {
                           setDropDown(!dropDown);
                         }}
                         className={` relative w-6 h-6 mt-0.5 transition-all ease-linear ${
-                          dropDown ? "-rotate-90" : "rotate-0"
+                          dropDown ? "rotate-0" : "-rotate-90"
                         } `}
                       >
                         <Image
@@ -143,6 +183,29 @@ function NavBar({children, pathURL}) {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div
+                    className={` overflow-y-scroll h-[300px] ${
+                      dropDown ? "flex" : "hidden"
+                    } justify-center`}
+                  >
+                    {projectData.length > 0 ? (
+                      <div
+                        className={`flex flex-col items-center justify-center w-full mt-10`}
+                      >
+                        {projectData.map((e) => {
+                          return (
+                            <div className="w-full" key={e.id}>
+                              <div className=" font-normal font-ubuntu text-lg gap-2 my-1 p-3 text-center border-b-2 border-b-slate-200 w-full">
+                                <Link href={"/all-projects/" + e.projectSlug}>
+                                  {e.projectName.toUpperCase()}
+                                </Link>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
                 <div className="flex flex-col mb-14 md:mb-5 ">

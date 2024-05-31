@@ -16,20 +16,26 @@ export const getDocument = async (collection, document) => {
   const querySnapshot = await getDoc(doc(db, collection, document));
   return querySnapshot.data();
 };
-export const getQueriedDocuments = async (
-  collec,
-  queryField,
-  queryComparator,
-  queryValue
-) => {
-  const querySnapshot = await getDocs(
-    query(
-      collection(db, collec),
-      where(queryField, queryComparator, queryValue)
-    )
-  );
-  return querySnapshot;
-};
+// export const getQueriedDocuments = async (
+//   collec,
+//   queryField,
+//   queryComparator,
+//   queryValue
+// ) => {
+//   if (queryValue) {
+//     const q = query(
+//       collection(db, collec),
+//       where(queryField, queryComparator, queryValue)
+//     );
+//     const querySnapshot = await getDocs(q);
+
+//     const projectsArray = [];
+//     querySnapshot.forEach((doc) => {
+//       projectsArray.push({id: doc.id, ...doc.data()});
+//     });
+//     return projectsArray;
+//   }
+// };
 export const setDocument = async (collection, document, value) => {
   await setDoc(doc(db, collection, document), value);
 };

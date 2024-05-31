@@ -1,11 +1,9 @@
 "use client";
 import React, {useEffect, useState} from "react";
 import LoadingScreen from "./loadingScreen";
-import Image from "next/image";
 import Cards, {AddCard} from "./cards";
 import {useSelector} from "react-redux";
-import {getQueriedDocuments} from "./utils/firebase/firebaseQueries";
-import LoadingComponent from "./loadingComponent";
+
 import {
   collection,
   getDocs,
@@ -14,10 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 import {app} from "@/firebase";
-import {Swiper, SwiperSlide} from "swiper/react";
 
-// Import Swiper styles
-import "swiper/css";
 // import {DisplayFilteredName} from "./utils/filteredProvidedDetails";
 function Home({userProp}) {
   const user = useSelector((state) => state.authState.user);
@@ -28,7 +23,7 @@ function Home({userProp}) {
 
   useEffect(() => {
     async function getData() {
-      if (user) {
+      if (user.uid) {
         const q = query(
           collection(db, "projects"),
           where("members", "array-contains", user.uid)

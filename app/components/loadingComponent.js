@@ -4,7 +4,7 @@ import React from "react";
 
 function LoadingComponent() {
   return (
-    <Box sx={{display: "flex ", color: "#65a30d", marginLeft: 5}}>
+    <Box sx={{display: "flex ", color: "#65a30d"}}>
       <CircularProgress color="inherit" />
     </Box>
   );
