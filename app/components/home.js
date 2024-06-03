@@ -49,10 +49,10 @@ function Home({userProp}) {
     getData();
   }, [db, user]);
 
-  useEffect(() => {
-    const timerId = setInterval(() => setClock(new Date()), 1000);
-    return () => clearInterval(timerId);
-  }, []);
+  // useEffect(() => {
+  //   const timerId = setInterval(() => setClock(new Date()), 1000);
+  //   return () => clearInterval(timerId);
+  // }, []);
 
   console.log(projectData);
   // TODO fix this shit
@@ -76,9 +76,9 @@ function Home({userProp}) {
             <div className=" w-0 bg-transparent p-[3px] group-hover:bg-primary-accent group-hover:w-full transition-all ease-linear  justify-center   my-1"></div>
           </div>
         </div>
-        <div className=" relative p-2  text-purple-700 -top-[85px] -right-[80%] font-ubuntu font-semibold text-4xl ">
+        {/* <div className=" relative p-2  text-purple-700 -top-[85px] -right-[80%] font-ubuntu font-semibold text-4xl ">
           {formatTime(clock)}
-        </div>
+        </div> */}
         {/* overview */}
         <div className="m-5 my-10">
           <div className=" font-inter font-medium text-2xl ">
