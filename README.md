@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Waiveer
+
+Waiveer is a web application designed to streamline the management of tasks and workflows. The app is aimed at improving productivity and organization by providing an easy-to-use platform where users can manage their projects efficiently.
+
+## Key Features
+1. **Task Management**: Organize and prioritize your tasks with ease.
+2. **Project Planning**: Create and manage projects to keep track of your progress and deadlines.
+3. **Notifications**: Stay updated with notifications about important events and deadlines.
+4. **User-Friendly Interface**: Enjoy a clean, intuitive interface that makes managing tasks simple and efficient.
+5. **Theme Customization**: Switch between different themes to personalize your experience.
 
 ## Getting Started
 
@@ -18,19 +27,12 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## Support
+For any issues or questions, please contact our support team at support@waiveer.com. We are here to help you get the most out of Waiveer.
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
+We welcome contributions from the community to help improve Waiveer. If you have suggestions for new features or improvements, please refer to our [contribution guidelines](CONTRIBUTING.md).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## License
+Waiveer is licensed under the [MIT License](LICENSE).
