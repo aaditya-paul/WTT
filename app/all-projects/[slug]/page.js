@@ -6,6 +6,7 @@ import {usePathname} from "next/navigation";
 import {collection, getDocs, query, where} from "firebase/firestore";
 import {db} from "@/firebase";
 import LoadingScreen from "@/app/components/loadingScreen";
+import Head from "next/head";
 
 function Page() {
   const pathName = usePathname();
@@ -40,6 +41,7 @@ function Page() {
   } else {
     return (
       <div>
+        <title>{project.projectName}</title>
         <h1>{project.projectName}</h1>
         <p>{project.ProjectDescription}</p>
       </div>
