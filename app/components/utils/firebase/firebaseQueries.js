@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import {useSelector} from "react-redux";
-const db = getFirestore(app);
+import {db} from "@/firebase";
 
 export const getDocument = async (collection, document) => {
   const querySnapshot = await getDoc(doc(db, collection, document));
