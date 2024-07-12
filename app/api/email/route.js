@@ -13,14 +13,14 @@ export async function POST(req) {
     let transporter = nodemailer.createTransport({
       service: "gmail", // use Gmail as the SMTP service
       auth: {
-        user: process.env.NEXT_PUBLIC_GMAIL_USER, // your Gmail address
-        pass: process.env.NEXT_PUBLIC_GMAIL_PASS, // your Gmail password or App Password
+        user: process.env.GMAIL_USER, // your Gmail address
+        pass: process.env.GMAIL_PASS, // your Gmail password or App Password
       },
     });
 
     // Set up email data
     let mailOptions = {
-      from: process.env.NEXT_PUBLIC_GMAIL_USER, // sender address
+      from: process.env.GMAIL_USER, // sender address
       to: to, // list of receivers
       subject: subject, // Subject line
       text: text, // plain text body
