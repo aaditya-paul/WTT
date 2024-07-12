@@ -193,20 +193,21 @@ function NavBar({children, pathURL}) {
                       <div className={`flex flex-col items-center w-full`}>
                         {projectData.map((e) => {
                           return (
-                            <div
+                            <Link
+                              key={e.id}
                               className={`w-full ${
                                 pathURL == `/all-projects/${e.projectSlug}`
                                   ? " text-[#658401] bg-opacity-80"
                                   : "bg-transparent"
                               }`}
-                              key={e.id}
+                              href={"/all-projects/" + e.projectSlug}
                             >
-                              <div className=" font-normal font-ubuntu text-lg gap-2 my-1 p-3 text-center border-b-2 border-b-slate-200 w-full">
-                                <Link href={"/all-projects/" + e.projectSlug}>
+                              <div>
+                                <div className=" font-normal font-ubuntu text-lg gap-2 my-1 p-3 text-center border-b-2 border-b-slate-200 w-full">
                                   {e.projectName.toUpperCase()}
-                                </Link>
+                                </div>
                               </div>
-                            </div>
+                            </Link>
                           );
                         })}
                       </div>

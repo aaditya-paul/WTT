@@ -1,15 +1,16 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
+import React, {use, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import LoadingScreen from "./loadingScreen";
 import Image from "next/image";
 import Project from "../../public/assets/icons/study.png";
+import InfoImage from "../../public/assets/icons/info.svg";
 import InfoModal from "./utils/infoModal";
 import {setDocument} from "./utils/firebase/firebaseQueries";
 import {useRouter} from "next/navigation";
 import AuthStateCheck from "./utils/AuthStateCheck";
-
+import {serverTimestamp} from "firebase/firestore";
 function AddProjects() {
   const user = useSelector((state) => state.authState.user);
   const [projectName, setProjectName] = useState("");
@@ -21,7 +22,10 @@ function AddProjects() {
   const [member, setMember] = useState([]);
   const [memberEmail, setMemberEmail] = useState("");
   const [error, setError] = useState(false);
+  const [URLid, setURLid] = useState("");
   const router = useRouter();
+
+  // ! for developement to be removed in production
 
   // useEffect(() => {
   //   return () => {
@@ -29,6 +33,7 @@ function AddProjects() {
   //   };
   // });
 
+  // retrieve data from local storage
   useEffect(() => {
     setProjectName(localStorage.getItem("projectName") || "");
     setProjectSlug(localStorage.getItem("projectSlug") || "");
@@ -40,7 +45,63 @@ function AddProjects() {
     setMember(JSON.parse(localStorage.getItem("members")) || []);
   }, []);
 
-  const handleClick = () => {
+  const generateUniqueId = () => {
+    const characters =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let id = "";
+    for (let i = 0; i < 10; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      id += characters[randomIndex];
+    }
+    return id;
+  };
+
+  const handleURLEncode = (emailParam) => {
+    const URLid = generateUniqueId();
+    setDocument("url", URLid, {
+      id: URLid,
+      expire: false,
+      createdAt: new Date(),
+      emailAssigned: emailParam,
+      _created: serverTimestamp(),
+    });
+    setURLid(URLid);
+    // const currentTime = new Date(); // current time example: 2022-09-01T12:00:00.000Z
+    // const futureTime = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000); // future time example: 2022-09-02T12:00:00.000Z
+    const url = `invite?`;
+    const query = `slug=${projectSlug}&urlId=${URLid}&email=${emailParam}`;
+    // const encoded = encodeURIComponent(slug);
+    const finalURL = process.env.NEXT_PUBLIC_URL + url + query;
+    return finalURL;
+  };
+
+  const handleEmail = async (email, subject, message) => {
+    try {
+      const res = await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: email,
+          subject: subject,
+          text: message,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        console.log("Email sent successfully!");
+      } else {
+        console.log(`Failed to send email: ${data.message}`);
+      }
+    } catch (error) {
+      console.log(`Failed to send email: ${error.message}`);
+    }
+  };
+
+  const handleClick = async () => {
     const data = {
       projectName,
       projectSlug,
@@ -48,14 +109,29 @@ function AddProjects() {
       projectDescription,
       startDate,
       deadlineDate,
-      members: [...member, user.uid],
+      members: [user.uid],
+      memberInvite: [...member],
       createdBy: user.uid,
     };
 
     if (checkValidity()) {
+      // create project in database
       setDocument("projects", projectSlug, data).then(() => {
         router.push("/all-projects/" + projectSlug);
       });
+
+      // send email
+
+      for (const memberEmail of member) {
+        await handleEmail(
+          memberEmail,
+          "Project Invitation",
+          `You have been invited to the project: ${projectName}. Join here: ${handleURLEncode(
+            memberEmail
+          )}`
+        );
+      }
+
       localStorage.clear();
     }
   };
@@ -68,7 +144,7 @@ function AddProjects() {
       !projectDescription ||
       !startDate ||
       !deadlineDate ||
-      !memberEmail
+      member.length == 0
     ) {
       setError(true);
       return false;
@@ -97,10 +173,7 @@ function AddProjects() {
   };
 
   const removeMember = (e) => {
-    console.log(e);
-    const email = e.target.parentElement.firstChild.innerText;
-
-    const newMembers = member.filter((member) => member !== email);
+    const newMembers = member.filter((member) => member !== e);
     setMember(newMembers);
     localStorage.setItem("members", JSON.stringify(newMembers));
   };
@@ -274,11 +347,25 @@ function AddProjects() {
                         className=" flex justify-between border border-l-primary border-b-primary border-transparent p-3 rounded-sm"
                       >
                         <div>{member}</div>
-                        <div
-                          onClick={removeMember}
-                          className=" border border-red-500 ease-linear transition-all active:scale-95  hover:bg-red-500 p-2 hover:text-white text-sm rounded-lg cursor-pointer "
-                        >
-                          Delete
+                        {/* right grp  */}
+                        <div className=" flex items-center gap-5">
+                          {/* dlt btn */}
+                          <div
+                            onClick={() => removeMember(member)}
+                            className=" border border-red-500 ease-linear transition-all active:scale-95  hover:bg-red-500 p-2 hover:text-white text-sm rounded-lg cursor-pointer "
+                          >
+                            Delete
+                          </div>
+
+                          {/* info button */}
+                          <button
+                            disabled
+                            title="This member gets full access as a contributor"
+                          >
+                            <div>
+                              <Image alt="info" src={InfoImage} width={28} />
+                            </div>
+                          </button>
                         </div>
                       </div>
                     ))}

@@ -47,9 +47,7 @@ function SingleProject() {
     if (project.members.includes(user.uid.toString())) {
       return (
         <div>
-          <Head>
-            <title>{"WTT | " + project.projectName}</title>
-          </Head>
+          <title>{"WTT - " + project?.projectName}</title>
           <h1>{project.projectName}</h1>
           <p>{project.ProjectDescription}</p>
         </div>
