@@ -1,7 +1,6 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
-import {getDocument} from "@/app/components/utils/firebase/firebaseQueries";
 import {usePathname} from "next/navigation";
 import {collection, getDocs, query, where} from "firebase/firestore";
 import {db} from "@/firebase";
@@ -29,6 +28,7 @@ function SingleProject() {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           setProject(data);
+          console.log(data);
         });
       } catch (error) {
         console.error("Error getting project data:", error);
@@ -44,12 +44,12 @@ function SingleProject() {
   }
 
   if (project) {
-    if (project.members.includes(user.uid.toString())) {
+    if (project.members.includes(user.uid)) {
       return (
         <div>
           <title>{"WTT - " + project?.projectName}</title>
           <h1>{project.projectName}</h1>
-          <p>{project.ProjectDescription}</p>
+          <p>{project.projectDescription}</p>
         </div>
       );
     } else {

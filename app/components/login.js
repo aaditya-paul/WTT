@@ -1,14 +1,21 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../public/logo.png";
 import InfoModal from "./utils/infoModal";
 import GithubBTN from "./SignInButtons";
 import AuthStateCheck from "./utils/AuthStateCheck";
+import {db} from "@/firebase";
+import {getAuth, onAuthStateChanged} from "firebase/auth";
+import {useRouter, useSearchParams} from "next/navigation";
 
 function SignUp() {
+  const router = useRouter();
+  const search = useSearchParams();
+  const redirect = search.get("redirect");
+
   const [PassView, setPassView] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -16,10 +23,26 @@ function SignUp() {
 
   const [error, setError] = useState(false);
   const [errorDetails, setErrorDetails] = useState("");
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+      console.log(redirect);
+      // setTimeout(() => {
+      // Perform your action here
+      if (user) {
+        if (redirect) {
+          router.replace(redirect);
+        } else {
+          router.replace("/");
+        }
+      }
+      // }, 5000);
+    });
 
+    return () => unsubscribe();
+  }, [router, redirect]);
   return (
     <>
-      <AuthStateCheck redirectRoute={"/"} />
+      {/* <AuthStateCheck /> */}
       <div className="flex flex-col sm:flex-row justify-evenly items-center h-[100vh]">
         <div className=" flex flex-col  items-center md:items-start">
           <div className="relative md:w-24 md:h-24 w-20 h-20 ">

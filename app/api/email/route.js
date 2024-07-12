@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import nodemailer from "nodemailer";
 
 export async function GET() {
+  // console.log(process.env.GMAIL_PASS);
   return NextResponse.json({message: "GET request not allowed!"});
 }
 

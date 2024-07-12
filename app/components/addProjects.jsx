@@ -65,12 +65,13 @@ function AddProjects() {
       createdAt: new Date(),
       emailAssigned: emailParam,
       _created: serverTimestamp(),
+      slug: projectSlug,
     });
     setURLid(URLid);
     // const currentTime = new Date(); // current time example: 2022-09-01T12:00:00.000Z
     // const futureTime = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000); // future time example: 2022-09-02T12:00:00.000Z
     const url = `invite?`;
-    const query = `slug=${projectSlug}&urlId=${URLid}&email=${emailParam}`;
+    const query = `urlId=${URLid}`;
     // const encoded = encodeURIComponent(slug);
     const finalURL = process.env.NEXT_PUBLIC_URL + url + query;
     return finalURL;

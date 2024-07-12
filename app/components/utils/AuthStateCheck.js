@@ -9,6 +9,12 @@ import {doc, getDoc, getFirestore} from "firebase/firestore";
 const db = getFirestore(app);
 
 function AuthStateCheck({redirectRoute}) {
+  // if (redirectRoute === undefined) {
+  //   throw Error("Enter redirect url");
+  // }
+
+  // console.log(redirectRoute);
+
   const dispatch = useDispatch();
 
   const auth = getAuth();
@@ -20,9 +26,6 @@ function AuthStateCheck({redirectRoute}) {
       if (user) {
         const uid = user.uid;
 
-        if (redirectRoute) {
-          router.replace(redirectRoute.toString());
-        }
         //  sets user to state in this page
         setUser(user);
         // sets user in redux
@@ -37,14 +40,21 @@ function AuthStateCheck({redirectRoute}) {
             setDocument("users", user.uid, JSON.parse(JSON.stringify(user)));
           }
         });
+
+        // window.location.reload();
+        // console.log("heyy" + redirectRoute);
+
+        // router.replace(redirectRoute ? redirectRoute : "/");
       } else {
-        router.replace("/login");
+        router.replace(
+          `/login${redirectRoute ? `?redirect=${redirectRoute}` : ""}`
+        );
         setUser(false);
       }
     });
 
     return () => unsubscribe();
-  }, [auth, router, dispatch, redirectRoute]);
+  }, [auth, dispatch, redirectRoute, router]);
 
   return null;
 }

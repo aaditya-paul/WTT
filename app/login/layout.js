@@ -14,7 +14,7 @@ const dosis_init = Dosis({
   variable: "--font-doasis",
 });
 
-const InviteLayout = ({children}) => {
+const LoginLayout = ({children}) => {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <div>{children}</div>
@@ -22,4 +22,4 @@ const InviteLayout = ({children}) => {
   );
 };
 
-export default InviteLayout;
+export default LoginLayout;
