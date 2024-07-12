@@ -11,6 +11,7 @@ import {setDocument} from "./utils/firebase/firebaseQueries";
 import {useRouter} from "next/navigation";
 import AuthStateCheck from "./utils/AuthStateCheck";
 import {serverTimestamp} from "firebase/firestore";
+
 function AddProjects() {
   const user = useSelector((state) => state.authState.user);
   const [projectName, setProjectName] = useState("");
