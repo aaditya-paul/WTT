@@ -15,7 +15,7 @@ function Header() {
   const uid = useSelector((state) => state.authState.uid);
   const user = useSelector((state) => state.authState.user);
   const name = user.displayName;
-
+  // console.log(user);
   if (user) {
     return (
       <>

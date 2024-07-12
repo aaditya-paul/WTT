@@ -9,6 +9,12 @@ import {doc, getDoc, getFirestore} from "firebase/firestore";
 const db = getFirestore(app);
 
 function AuthStateCheck({redirectRoute}) {
+  // if (redirectRoute === undefined) {
+  //   throw Error("Enter redirect url");
+  // }
+
+  // console.log(redirectRoute);
+
   const dispatch = useDispatch();
 
   const auth = getAuth();

@@ -54,8 +54,7 @@ function Home({userProp}) {
   //   return () => clearInterval(timerId);
   // }, []);
 
-  console.log(projectData);
-  // TODO fix this shit
+  // console.log(projectData);
   if (user) {
     return (
       <div className=" overflow-y-scroll overflow-x-hidden h-[88vh] pb-5">
@@ -94,7 +93,7 @@ function Home({userProp}) {
                       <Cards
                         key={e.projectSlug}
                         projectName={e.projectName}
-                        projectDescription={e.ProjectDescription}
+                        projectDescription={e.projectDescription}
                         startDate={e.startDate}
                         deadlineDate={e.deadlineDate}
                         projectSlug={e.projectSlug}
