@@ -15,10 +15,13 @@ function Cards({
   deadlineDate,
   projectSlug,
   members,
+  createdBy,
+  viewALL = false,
 }) {
   const router = useRouter();
 
-  const [projectMember, setProjectMember] = useState("");
+  const [projectMember, setProjectMember] = useState([]);
+  const [createdBY, setCreatedBY] = useState("");
 
   useEffect(() => {
     const getMembers = async () => {
@@ -32,6 +35,10 @@ function Cards({
             name: docRef.data().displayName,
             pfp: docRef.data().photoURL,
           });
+
+          if (docRef.data().uid === createdBy) {
+            setCreatedBY(docRef.data().displayName);
+          }
         } else {
           console.log("No such document!");
         }
@@ -40,18 +47,20 @@ function Cards({
     };
     getMembers();
     // console.log(members);
-  }, [members]);
-  if (projectMember.length === 0)
-    return (
-      <div className=" flex justify-center items-center gap-5 mx-5">
-        <LoadingComponent />
-      </div>
-    );
+  }, [members, createdBy]);
+  if (!viewALL) {
+    if (projectMember.length === 0 || createdBY === "")
+      return (
+        <div className=" flex justify-center items-center gap-5 mx-5">
+          <LoadingComponent />
+        </div>
+      );
+  }
   return (
     <div className="hover:scale-105 border-2 border-primary flex flex-col transition-all ease-linear bg-white w-[350px] p-5 rounded-md shadow-sm">
       {/* project name */}
       <div className="text-xl">{projectName.toUpperCase()}</div>
-      <div className="mx-2 text-sm font-thin">Created by: Aaditya Paul</div>
+      <div className="mx-2 text-sm font-thin">Created by: {createdBY}</div>
       {/* project details */}
       <div className="flex-grow mx-3">
         {/* Description */}

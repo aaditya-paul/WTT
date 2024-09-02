@@ -28,7 +28,7 @@ function SingleProject() {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           setProject(data);
-          console.log(data);
+          // console.log(data);
         });
       } catch (error) {
         console.error("Error getting project data:", error);

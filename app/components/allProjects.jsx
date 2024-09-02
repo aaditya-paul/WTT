@@ -40,6 +40,9 @@ function AllProjects() {
     }
     getData();
   }, [db, user]);
+
+  console.log(projectData);
+
   if (user) {
     return (
       <>
@@ -74,6 +77,9 @@ function AllProjects() {
                       startDate={e.startDate}
                       deadlineDate={e.deadlineDate}
                       projectSlug={e.projectSlug}
+                      members={e.members}
+                      createdBy={e.createdBy}
+                      viewALL={true}
                     />
                   );
                 })
