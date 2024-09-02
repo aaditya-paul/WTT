@@ -1,17 +1,52 @@
-import React from "react";
+"use client";
+
+import React, {useEffect, useState} from "react";
 import Image from "next/image";
 import Add from "../../public/assets/icons/add.png";
 import userImage from "../../public/assets/icons/user.png";
 import {useRouter} from "next/navigation";
-
+import {doc, getDoc} from "firebase/firestore";
+import {db} from "@/firebase";
+import LoadingComponent from "./loadingComponent";
 function Cards({
   projectName,
   projectDescription,
   startDate,
   deadlineDate,
   projectSlug,
+  members,
 }) {
   const router = useRouter();
+
+  const [projectMember, setProjectMember] = useState("");
+
+  useEffect(() => {
+    const getMembers = async () => {
+      var Member = [];
+      for (let i = 0; i < members.length; i++) {
+        const docRef = await getDoc(doc(db, "users", members[i]));
+        if (docRef.exists()) {
+          // console.log(docRef.data());
+
+          Member.push({
+            name: docRef.data().displayName,
+            pfp: docRef.data().photoURL,
+          });
+        } else {
+          console.log("No such document!");
+        }
+      }
+      setProjectMember(Member);
+    };
+    getMembers();
+    // console.log(members);
+  }, [members]);
+  if (projectMember.length === 0)
+    return (
+      <div className=" flex justify-center items-center gap-5 mx-5">
+        <LoadingComponent />
+      </div>
+    );
   return (
     <div className="hover:scale-105 border-2 border-primary flex flex-col transition-all ease-linear bg-white w-[350px] p-5 rounded-md shadow-sm">
       {/* project name */}
@@ -26,59 +61,38 @@ function Cards({
         <div className="break-words mx-3 font-doasis text-slate-600 font-normal text-sm">
           {projectDescription}
         </div>
-        {/* Deadline */}
+        {/* Duation */}
         <div className="mt-3 mb-2 font-ubuntu text-lime-600 font-medium text-lg">
-          Deadline:
+          Duration:
         </div>
         <div className="mx-3 font-doasis text-slate-600 font-normal text-sm">
-          {deadlineDate}
+          from: ({startDate}) ~ to:({deadlineDate})
         </div>
         {/* Members */}
         <div className="mt-3 mb-2 font-ubuntu text-lime-600 font-medium text-lg">
           Members:
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex gap-1">
-            <div>
-              <div className="relative w-5 md:w-6 h-5 md:h-6 ml-5">
-                <Image
-                  alt="theme"
-                  src={userImage}
-                  className="object-contain"
-                  fill
-                />
+          {projectMember.map((e) => {
+            return (
+              <div key={e.index} className="flex gap-1 items-center">
+                <div>
+                  <div className="relative w-6  md:w-7 h-6 md:h-7 ml-5">
+                    <Image
+                      alt="theme"
+                      // src={userImage}
+                      src={e.pfp ? e.pfp : userImage}
+                      className="object-contain rounded-full"
+                      fill
+                    />
+                  </div>
+                </div>
+                <div className="mx-3 font-doasis text-slate-600 font-normal text-sm">
+                  {e.name}
+                </div>
               </div>
-            </div>
-            <div className="mx-3 font-doasis text-slate-600 font-normal text-sm">
-              Aaditya Paul | Lead of Tech Dept.
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="relative w-5 md:w-6 h-5 md:h-6 ml-5">
-              <Image
-                alt="theme"
-                src={userImage}
-                className="object-contain"
-                fill
-              />
-            </div>
-            <div className="mx-3 font-doasis text-slate-600 font-normal text-sm">
-              Bhaskar Roy | Design Dept.
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="relative w-5 md:w-6 h-5 md:h-6 ml-5">
-              <Image
-                alt="theme"
-                src={userImage}
-                className="object-contain"
-                fill
-              />
-            </div>
-            <div className="mx-3 font-doasis text-slate-600 font-normal text-sm">
-              Rajdeep Karmakar | Tech Dept.
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
       {/* Go to project */}

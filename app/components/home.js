@@ -97,6 +97,7 @@ function Home({userProp}) {
                         startDate={e.startDate}
                         deadlineDate={e.deadlineDate}
                         projectSlug={e.projectSlug}
+                        members={e.members}
                       />
                     );
                   })}
