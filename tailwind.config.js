@@ -26,7 +26,7 @@ module.exports = {
       "sm": "640px",
       // => @media (min-width: 640px) { ... }
 
-      "md": "820px",
+      "md": "853px",
       // => @media (min-width: 768px) { ... }
       // "tab": "1023px",
 

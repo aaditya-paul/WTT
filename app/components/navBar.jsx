@@ -172,7 +172,7 @@ function NavBar({children, pathURL}) {
                         }}
                         className={` relative w-6 h-6 mt-0.5 transition-all ease-linear ${
                           dropDown ? "rotate-0" : "-rotate-90"
-                        } `}
+                        } ${toggleMenu ? "block " : " hidden "} `}
                       >
                         <Image
                           alt={"projects"}

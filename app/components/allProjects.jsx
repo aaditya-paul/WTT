@@ -73,7 +73,7 @@ function AllProjects() {
                     <Cards
                       key={e.projectSlug}
                       projectName={e.projectName}
-                      projectDescription={e.ProjectDescription}
+                      projectDescription={e.projectDescription}
                       startDate={e.startDate}
                       deadlineDate={e.deadlineDate}
                       projectSlug={e.projectSlug}
