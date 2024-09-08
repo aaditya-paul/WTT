@@ -12,6 +12,7 @@ import Image from "next/image";
 import GanttChart from "./ganttView";
 import ViewOptions from "./viewOptions";
 import ViewBoard from "./viewBoard";
+import ViewMembers from "./viewMembers";
 
 const tasks = [
   {
@@ -135,16 +136,9 @@ function SingleProject() {
               {/* <p>{project.projectDescription}</p> */}
             </div>
             <div className="  border rounded-xl border-gray-500 shadow-md h-[86vh] lg:basis-1/4 md:basis-2/4">
-              <div className=" p-4">
-                <div className=" font-doasis my-2 font-bold text-2xl text-center">
-                  Members
-                </div>
-                <div className="flex flex-col gap-2">
-                  {project.members.map((member) => (
-                    <div key={member}>{member}</div>
-                  ))}
-                </div>
-              </div>
+              {/* Members */}
+
+              <ViewMembers project={project} members={project.members} />
             </div>
           </div>
         </div>

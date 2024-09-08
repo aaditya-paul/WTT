@@ -30,7 +30,7 @@ function ViewOptions({dashView, setDashView}) {
             dashView == route.id
               ? "bg-lime-700 text-white"
               : "bg-white text-lime-700"
-          } cursor-pointer px-4 py-2 rounded-md`}
+          } cursor-pointer px-4 py-2 rounded-md `}
         >
           {route.name}
         </div>

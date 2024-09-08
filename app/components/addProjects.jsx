@@ -14,9 +14,10 @@ import {serverTimestamp} from "firebase/firestore";
 
 function AddProjects() {
   const user = useSelector((state) => state.authState.user);
-  const [projectName, setProjectName] = useState("");
+
   const [projectSlug, setProjectSlug] = useState("");
   const [projectIcon, setProjectIcon] = useState("");
+  const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [deadlineDate, setDeadlineDate] = useState("");
@@ -104,9 +105,11 @@ function AddProjects() {
   };
 
   const handleClick = async () => {
+    const modProjectSlug = projectSlug + "-" + user.uid;
+
     const data = {
       projectName,
-      projectSlug,
+      projectSlug: modProjectSlug,
       projectIcon,
       projectDescription,
       startDate,
@@ -118,8 +121,8 @@ function AddProjects() {
 
     if (checkValidity()) {
       // create project in database
-      setDocument("projects", projectSlug, data).then(() => {
-        router.push("/all-projects/" + projectSlug);
+      setDocument("projects", modProjectSlug, data).then(() => {
+        router.push("/all-projects/" + modProjectSlug);
       });
 
       // send email
