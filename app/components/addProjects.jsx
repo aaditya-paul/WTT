@@ -66,7 +66,7 @@ function AddProjects() {
       createdAt: new Date(),
       emailAssigned: emailParam,
       _created: serverTimestamp(),
-      slug: projectSlug,
+      slug: projectSlug + "-" + user.uid,
     });
     setURLid(URLid);
     // const currentTime = new Date(); // current time example: 2022-09-01T12:00:00.000Z

@@ -137,8 +137,14 @@ function SingleProject() {
             </div>
             <div className="  border rounded-xl border-gray-500 shadow-md h-[86vh] lg:basis-1/4 md:basis-2/4">
               {/* Members */}
-
-              <ViewMembers project={project} members={project.members} />
+              <div className=" p-4">
+                <div className=" font-doasis my-2 font-bold text-2xl text-center">
+                  Members
+                </div>
+                <div className="flex flex-col gap-2 my-4">
+                  <ViewMembers project={project} members={project.members} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
