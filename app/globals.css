@@ -1,24 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-   input::-ms-reveal,
-      input::-ms-clear {
-        display: none;
-      }
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
 
+/* add the code bellow */
+@layer utilities {
 
-::-moz-selection { /* Code for Firefox */
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
+::-moz-selection {
+  /* Code for Firefox */
   color: white;
   background: #65A30D;
 }
 
 ::selection {
-    color: white;
+  color: white;
   background: #65A30D;
 }
 
