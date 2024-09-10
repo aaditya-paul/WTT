@@ -23,6 +23,24 @@ function AddTaskModal({setToggleModal, toggleModal}) {
   const [loading, setLoading] = useState(true);
   const [projectMember, setProjectMember] = useState(null);
   const [memberDetails, setMemberDetails] = useState(null);
+  const [taskName, setTaskName] = useState("");
+  const [taskStartDate, setTaskStartDate] = useState("");
+  const [taskEndDate, setTaskEndDate] = useState("");
+  const [taskAssignees, setTaskAssignees] = useState([]);
+  const [taskID, setTaskID] = useState("");
+
+  const handleSubmit = () => {
+    if (
+      taskName === "" ||
+      taskStartDate === "" ||
+      taskEndDate === "" ||
+      taskAssignees.length === 0 ||
+      taskID === ""
+    ) {
+      alert("Fill All Details");
+    }
+  };
+
   useEffect(() => {
     const getProjectData = async () => {
       try {
@@ -42,7 +60,7 @@ function AddTaskModal({setToggleModal, toggleModal}) {
     };
 
     getProjectData();
-  }, []);
+  }, [project_slug]);
 
   useEffect(() => {
     const getMembers = async () => {
@@ -166,7 +184,10 @@ function AddTaskModal({setToggleModal, toggleModal}) {
                     })}
                   </div>
 
-                  <div className=" my-2 flex justify-center items-center p-4 border border-lime-700 hover:bg-lime-700 hover:text-white text-xl cursor-pointer transition-all ease-linear">
+                  <div
+                    onClick={handleSubmit}
+                    className=" my-1 flex justify-center items-center p-4 border border-lime-700 hover:bg-lime-700 hover:text-white text-xl cursor-pointer transition-all ease-linear"
+                  >
                     <div>Add Task</div>
                   </div>
                 </>
