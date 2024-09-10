@@ -135,7 +135,7 @@ function SingleProject() {
 
               {/* <p>{project.projectDescription}</p> */}
             </div>
-            <div className="  border rounded-xl border-gray-500 shadow-md h-[86vh] lg:basis-1/4 md:basis-2/4">
+            <div className="  border rounded-xl bg-white shadow-md h-[86vh] lg:basis-1/4 md:basis-2/4">
               {/* Members */}
               <div className=" p-4">
                 <div className=" font-doasis my-2 font-bold text-2xl text-center">

@@ -31,16 +31,15 @@ function ViewMembers({project, members}) {
   return (
     <div>
       {projectMember.map((member, index) => (
-        <div className=" flex gap-3 my-3 items-center ">
+        <div key={index} className=" flex gap-3 my-3 items-center ">
           <div>
-            <div className=" relative w-8 h-8">
-              <Image
-                src={member.pfp ? member.pfp : userImage}
-                alt="user"
-                fill
-                className="rounded-full -z-10"
-              />
-            </div>
+            <Image
+              src={member.pfp ? member.pfp : userImage}
+              alt="user"
+              width={32}
+              height={32}
+              className="rounded-full  "
+            />
           </div>
           <div className=" font-normal font-ubuntu text-lg">{member.name}</div>
         </div>

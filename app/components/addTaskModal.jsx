@@ -86,8 +86,8 @@ function AddTaskModal({setToggleModal, toggleModal}) {
     };
   }, [setToggleModal, toggleModal]);
   return (
-    <div className="  flex h-[100vh] w-[100vw] justify-center items-center overflow-hidden ">
-      <div className=" z-40 w-fit h-[80%] bg-white rounded-lg shadow-2xl p-4 overflow-y-auto no-scrollbar  ">
+    <div className=" z-50 flex h-[100vh] w-[100vw] justify-center items-center overflow-hidden ">
+      <div className=" z-50 w-fit h-[80%] bg-white rounded-lg shadow-2xl p-4 overflow-y-auto no-scrollbar  ">
         <div className=" flex justify-between align-middle">
           {/* heading */}
           <div className=" font-doasis font-semibold text-3xl">Add Task</div>

@@ -10,7 +10,7 @@ function ViewBoard({dashView, tasks}) {
           dashView == "add-tasks" ? "block" : "hidden"
         } h-full w-full `}
       >
-        <div className=" flex flex-col justify-center px-4 items-center  ">
+        <div className=" flex flex-col justify-center px-4 items-center z-50  ">
           <Addtask />
         </div>
       </div>
