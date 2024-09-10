@@ -115,12 +115,18 @@ function AddTaskModal({setToggleModal, toggleModal}) {
               <div className=" text-xl font-medium font-mono ">
                 Task Start Date
               </div>
-              <input className=" p-2 px-0 outline-none border-b border-lime-700" />
+              <input
+                type="date"
+                className=" p-2 px-0 outline-none border-b border-lime-700"
+              />
 
               <div className=" text-xl font-medium font-mono ">
                 Task End Date
               </div>
-              <input className=" p-2 px-0 outline-none border-b border-lime-700" />
+              <input
+                type="date"
+                className=" p-2 px-0 outline-none border-b border-lime-700"
+              />
             </div>
           </div>
           <div className=" flex flex-col gap-4">
