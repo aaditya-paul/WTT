@@ -14,6 +14,9 @@ import {
 } from "firebase/firestore";
 import {db} from "@/firebase";
 import LoadingComponent from "./loadingComponent";
+import InfoModal from "./utils/infoModal";
+import GenerateSlug from "./generateSlug";
+import {setDocument} from "./utils/firebase/firebaseQueries";
 function AddTaskModal({setToggleModal, toggleModal}) {
   const pathName = usePathname();
   const project_slug = pathName.slice(14);
@@ -28,16 +31,24 @@ function AddTaskModal({setToggleModal, toggleModal}) {
   const [taskEndDate, setTaskEndDate] = useState("");
   const [taskAssignees, setTaskAssignees] = useState([]);
   const [taskID, setTaskID] = useState("");
+  const [error, setError] = useState(false);
 
   const handleSubmit = () => {
+    console.log(taskName, taskStartDate, taskEndDate, taskID);
+
     if (
       taskName === "" ||
       taskStartDate === "" ||
       taskEndDate === "" ||
-      taskAssignees.length === 0 ||
+      // taskAssignees.length === 0 ||
       taskID === ""
     ) {
-      alert("Fill All Details");
+      // alert("Fill All Details");
+      setError(true);
+    } else {
+      setDocument("projects", project_slug + "/" + "tasks" + "/" + taskID, {
+        taskUID: taskID,
+      });
     }
   };
 
@@ -104,106 +115,143 @@ function AddTaskModal({setToggleModal, toggleModal}) {
     };
   }, [setToggleModal, toggleModal]);
   return (
-    <div className=" z-50 flex h-[100vh] w-[100vw] justify-center items-center overflow-hidden ">
-      <div className=" z-50 w-fit h-[80%] bg-white rounded-lg shadow-2xl p-4 overflow-y-auto no-scrollbar  ">
-        <div className=" flex justify-between align-middle">
-          {/* heading */}
-          <div className=" font-doasis font-semibold text-3xl">Add Task</div>
-          {/* close btn */}
-          <div className=" cursor-pointer">
-            <div className=" relative h-9 w-9 rotate-45">
-              <Image
-                fill
-                alt="close"
-                src={Close}
-                onClick={() => setToggleModal(!toggleModal)}
-              />
+    <>
+      <div className=" z-50 flex h-[100vh] w-[100vw] justify-center items-center overflow-hidden ">
+        <div className=" z-50 w-fit h-[80%] bg-white rounded-lg shadow-2xl p-4 overflow-y-auto no-scrollbar  ">
+          <div className=" flex justify-between align-middle">
+            {/* heading */}
+            <div className=" font-doasis font-semibold text-3xl">Add Task</div>
+            {/* close btn */}
+            <div className=" cursor-pointer">
+              <div className=" relative h-9 w-9 rotate-45">
+                <Image
+                  fill
+                  alt="close"
+                  src={Close}
+                  onClick={() => setToggleModal(!toggleModal)}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className=" m-4 gap-4 flex flex-col ">
-          <div className=" flex gap-20 my-5 justify-evenly items-center">
-            <div className=" grid gap-4 ">
-              <div className=" text-xl font-medium font-mono ">Task Name</div>
-              <input className="  p-2 px-0 outline-none border-b border-lime-700" />
-              <div className=" text-xl font-medium font-mono ">Task Id</div>
-              <input className=" p-2 px-0 outline-none border-b border-lime-700 " />
-            </div>
-            <div className=" grid gap-4 p-2 ">
-              <div className=" text-xl font-medium font-mono ">
-                Task Start Date
-              </div>
-              <input
-                type="date"
-                className=" p-2 px-0 outline-none border-b border-lime-700"
-              />
-
-              <div className=" text-xl font-medium font-mono ">
-                Task End Date
-              </div>
-              <input
-                type="date"
-                className=" p-2 px-0 outline-none border-b border-lime-700"
-              />
-            </div>
-          </div>
-          <div className=" flex flex-col gap-4">
-            <div className=" text-xl font-medium font-mono  ">
-              Task Assignees
-            </div>
-            {/* <input className=" p-2 px-0 outline-none border-b border-lime-700" /> */}
-            <div>
-              {!toggleModal ? null : (
-                <>
-                  <div className=" flex flex-col no-scrollbar justify-start  h-32  overflow-y-scroll">
-                    {memberDetails.map((e, index) => {
-                      return (
-                        <>
-                          <div className=" flex items-center justify-between">
-                            <div className=" flex gap-3 items-center my-1">
-                              <div className=" relative w-8 h-8 ">
-                                <Image
-                                  className=" rounded-full"
-                                  fill
-                                  src={e.pfp}
-                                />
-                              </div>
-                              <div key={index}>{e.name}</div>
-                            </div>
-                            <input
-                              name="memcheck"
-                              className=" w-5 h-5 accent-lime-600 "
-                              type="checkbox"
-                              onChange={(e) => {
-                                console.log(e.target.checked);
-                              }}
-                            />
-                          </div>
-                        </>
-                      );
-                    })}
-                  </div>
-
+          <div className=" m-4 gap-4 flex flex-col ">
+            <div className=" flex gap-20 my-5 justify-evenly items-center">
+              <div className=" grid gap-4 ">
+                <div className=" text-xl font-medium font-mono ">Task Name</div>
+                <input
+                  value={taskName}
+                  onChange={(e) => {
+                    setTaskName(e.target.value);
+                  }}
+                  className="  p-2 px-0 outline-none border-b border-lime-700"
+                />
+                <div className=" text-xl font-medium font-mono ">Task Id</div>
+                <div className=" flex items-center border-b border-lime-700">
+                  <input
+                    value={taskID}
+                    onChange={(e) => {
+                      setTaskID(e.target.value);
+                    }}
+                    className=" p-2 px-0 outline-none  "
+                  />
                   <div
-                    onClick={handleSubmit}
-                    className=" my-1 flex justify-center items-center p-4 border border-lime-700 hover:bg-lime-700 hover:text-white text-xl cursor-pointer transition-all ease-linear"
+                    onClick={() => GenerateSlug(taskName, setTaskID)}
+                    className=" hover:bg-lime-700 hover:text-white transition-all ease-linear active:scale-95 cursor-pointer my-2  px-2 py-1 border border-lime-700 rounded-lg"
                   >
-                    <div>Add Task</div>
+                    Generate
                   </div>
-                </>
-              )}
+                </div>
+              </div>
+              <div className=" grid gap-4 p-2 ">
+                <div className=" text-xl font-medium font-mono ">
+                  Task Start Date
+                </div>
+                <input
+                  type="date"
+                  value={taskStartDate}
+                  onChange={(e) => {
+                    setTaskStartDate(e.target.value);
+                  }}
+                  className=" p-2 px-0 outline-none border-b border-lime-700"
+                />
+
+                <div className=" text-xl font-medium font-mono ">
+                  Task End Date
+                </div>
+                <input
+                  type="date"
+                  value={taskEndDate}
+                  onChange={(e) => {
+                    setTaskEndDate(e.target.value);
+                  }}
+                  className=" p-2 px-0 outline-none border-b border-lime-700"
+                />
+              </div>
+            </div>
+            <div className=" flex flex-col gap-4">
+              <div className=" text-xl font-medium font-mono  ">
+                Task Assignees
+              </div>
+              {/* <input className=" p-2 px-0 outline-none border-b border-lime-700" /> */}
+              <div>
+                {!toggleModal ? null : (
+                  <>
+                    <div className=" flex flex-col no-scrollbar justify-start  h-32  overflow-y-scroll">
+                      {memberDetails.map((e, index) => {
+                        return (
+                          <>
+                            <div className=" flex items-center justify-between">
+                              <div className=" flex gap-3 items-center my-1">
+                                <div className=" relative w-8 h-8 ">
+                                  <Image
+                                    className=" rounded-full"
+                                    fill
+                                    src={e.pfp}
+                                  />
+                                </div>
+                                <div key={index}>{e.name}</div>
+                              </div>
+                              <input
+                                name="memcheck"
+                                className=" w-5 h-5 accent-lime-600 "
+                                type="checkbox"
+                                onChange={(e) => {
+                                  console.log(e.target.checked);
+                                }}
+                              />
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+
+                    <div
+                      onClick={handleSubmit}
+                      className=" my-1 flex justify-center items-center p-4 border border-lime-700 hover:bg-lime-700 hover:text-white text-xl cursor-pointer transition-all ease-linear"
+                    >
+                      <div>Add Task</div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
+
+        <div
+          onClick={() => {
+            setToggleModal(!toggleModal);
+          }}
+          className=" absolute h-[100vh] w-[100vw] bg-white bg-opacity-30 backdrop-blur-[2px]"
+        ></div>
       </div>
 
-      <div
-        onClick={() => {
-          setToggleModal(!toggleModal);
-        }}
-        className=" absolute h-[100vh] w-[100vw] bg-white bg-opacity-30 backdrop-blur-[2px]"
-      ></div>
-    </div>
+      <div className={`${error ? "block" : "hidden"} `}>
+        <InfoModal
+          errorDetails={"Please fill all the fields before submitting!"}
+          setError={setError}
+        />
+      </div>
+    </>
   );
 }
 

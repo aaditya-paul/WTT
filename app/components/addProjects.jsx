@@ -11,6 +11,8 @@ import {setDocument} from "./utils/firebase/firebaseQueries";
 import {useRouter} from "next/navigation";
 import AuthStateCheck from "./utils/AuthStateCheck";
 import {serverTimestamp} from "firebase/firestore";
+import GenerateSlug from "./generateSlug";
+import {db} from "@/firebase";
 
 function AddProjects() {
   const user = useSelector((state) => state.authState.user);
@@ -68,6 +70,7 @@ function AddProjects() {
       _created: serverTimestamp(),
       slug: projectSlug + "-" + user.uid,
     });
+
     setURLid(URLid);
     // const currentTime = new Date(); // current time example: 2022-09-01T12:00:00.000Z
     // const futureTime = new Date(currentTime.getTime() + 24 * 60 * 60 * 1000); // future time example: 2022-09-02T12:00:00.000Z
@@ -220,7 +223,7 @@ function AddProjects() {
                   <div className="text-4xl font-medium text-slate-900">
                     Project Slug:
                   </div>
-                  <div className="my-5">
+                  <div className="my-5 flex border-b border-primary">
                     <input
                       value={projectSlug}
                       onChange={(e) => {
@@ -230,8 +233,21 @@ function AddProjects() {
                       autoComplete="off"
                       type="text"
                       placeholder="project-name-123"
-                      className="bg-transparent border-b border-primary w-full py-2 px-1 text-4xl outline-none"
+                      className="bg-transparent  w-full py-2 px-1 text-4xl outline-none"
                     />
+                    <div
+                      onClick={() =>
+                        GenerateSlug(
+                          projectName,
+                          setProjectSlug,
+                          true,
+                          "projects"
+                        )
+                      }
+                      className=" hover:bg-lime-700 hover:text-white transition-all ease-linear active:scale-95 cursor-pointer  px-4 py-2 border border-lime-700 m-2 rounded-lg"
+                    >
+                      Generate
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -388,6 +404,7 @@ function AddProjects() {
           <div className={`${error ? "block" : "hidden"}`}>
             <InfoModal
               errorDetails={"Please fill all the fields before submitting!"}
+              setError={setError}
             />
           </div>
         </div>
